@@ -10,6 +10,10 @@ import time
 
 from simple_salesforce import Salesforce
 
+from dotenv import load_dotenv, find_dotenv
+load_dotenv(find_dotenv())
+
+
 # You need to download the dataset from https://www.kaggle.com/mchirico/cheltenham-s-facebook-group.
 # (Free Kaggle account required. Download cheltenham-s-facebook-group.zip and extract the sqlite file.)
 CONN = sqlite3.connect('cheltenham-facebook-group.sqlite')
