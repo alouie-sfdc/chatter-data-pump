@@ -13,10 +13,15 @@ from simple_salesforce import Salesforce
 from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
 
+DATASET_FILE = 'cheltenham-facebook-group.sqlite'
+
+if not os.path.isfile(DATASET_FILE):
+    print "{} not found. Please see README.md for instructions on how to obtain it.".format(DATASET_FILE)
+    exit()
 
 # You need to download the dataset from https://www.kaggle.com/mchirico/cheltenham-s-facebook-group.
 # (Free Kaggle account required. Download cheltenham-s-facebook-group.zip and extract the sqlite file.)
-CONN = sqlite3.connect('cheltenham-facebook-group.sqlite')
+CONN = sqlite3.connect(DATASET_FILE)
 
 # You may want to set a delay here to avoid hitting rate limits.
 DELAY = float(os.environ.get('DELAY_BETWEEN_POSTS') or 0)
