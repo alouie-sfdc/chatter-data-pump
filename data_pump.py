@@ -24,7 +24,7 @@ DELAY = float(os.environ.get('DELAY_BETWEEN_POSTS') or 0)
 # If RECONSTRUCT_THREADS is True, we'll post random feed items with all of their
 # comments from the original Facebook threads. If it's False, we'll post random
 # feed items with random comments.
-RECONSTRUCT_THREADS = os.environ.get('RECONSTRUCT_THREADS') or True
+RECONSTRUCT_THREADS = (os.environ.get('RECONSTRUCT_THREADS') or '').lower() == 'true'
 
 # If RECONSTRUCT_THREADS is False, these settings control how many comments get posted.
 MIN_COMMENTS = int(os.environ.get('MIN_COMMENTS') or 3)
@@ -98,7 +98,7 @@ def post_random_thread(sf):
         time.sleep(DELAY)
 
         # Post comments.
-        
+
         if RECONSTRUCT_THREADS:
             query, params = "SELECT cid, msg FROM comment WHERE pid=? ORDER BY timeStamp", [pid]
         else:
