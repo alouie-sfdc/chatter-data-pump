@@ -5,6 +5,7 @@ group. See README.md for more details.
 
 import os
 import random
+import readchar
 import sqlite3
 import time
 
@@ -23,6 +24,10 @@ if not os.path.isfile(DATASET_FILE):
 # (Free Kaggle account required. Download cheltenham-s-facebook-group.zip and extract the sqlite file.)
 CONN = sqlite3.connect(DATASET_FILE)
 
+# If INTERACTIVE_MODE is True, we wait for a key press after each post instead of a delay.
+INTERACTIVE_MODE = (os.environ.get('INTERACTIVE_MODE') or '').lower() == 'true'
+INTERACTIVE_PROMPT = "Press 'f' to post a feed item, 'c' to post a comment, CTRL-C twice quickly to exit."
+
 # You may want to set a delay here to avoid hitting rate limits.
 DELAY = float(os.environ.get('DELAY_BETWEEN_POSTS') or 0)
 
@@ -34,6 +39,7 @@ RECONSTRUCT_THREADS = (os.environ.get('RECONSTRUCT_THREADS') or '').lower() == '
 # If RECONSTRUCT_THREADS is False, these settings control how many comments get posted.
 MIN_COMMENTS = int(os.environ.get('MIN_COMMENTS') or 3)
 MAX_COMMENTS = int(os.environ.get('MAX_COMMENTS') or 5)
+
 
 class SalesforceHelper(object):
 
@@ -82,6 +88,7 @@ def post_random_thread(sf):
     for (pid, post_body) in CONN.execute("SELECT pid, msg FROM post ORDER BY random() LIMIT 1"):
         post_body = replace_special_chars(post_body)
 
+        print "*" * 80
         print post_body
 
         random_parent = sf.get_random_parent()
@@ -100,7 +107,13 @@ def post_random_thread(sf):
             print "Error posting feed item: {}, input: {}".format(result['errors'], feed_item)
             continue
 
-        time.sleep(DELAY)
+        if INTERACTIVE_MODE:
+            print INTERACTIVE_PROMPT
+            char = readchar.readchar()
+            if char == 'f':
+                return
+        else:
+            time.sleep(DELAY)
 
         # Post comments.
 
@@ -124,7 +137,13 @@ def post_random_thread(sf):
                 print "Error posting comment: {}, input: {}".format(result['errors'], comment)
                 continue
 
-            time.sleep(DELAY)
+            if INTERACTIVE_MODE:
+                print INTERACTIVE_PROMPT
+                char = readchar.readchar()
+                if char == 'f':
+                    return
+            else:
+                time.sleep(DELAY)
 
 
 if __name__ == '__main__':

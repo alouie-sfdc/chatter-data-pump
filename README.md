@@ -6,6 +6,7 @@ To add some variety, it:
   * Chooses random users in your org to create the posts.
   * Chooses random users, groups, and accounts to post to (you can easily expand this to include more objects).
   * Chooses random threads from the Facebook dataset.
+  * Has an optional interactive mode that allows you to press 'f' for a feed item and 'c' for a comment.
 
 ## Installation
 
